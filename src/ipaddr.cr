@@ -1,4 +1,4 @@
-require "big_int"
+require "big"
 require "socket"
 
 lib LibC

@@ -100,7 +100,7 @@ class IPAddr
     when V6
       in_addr6 = uninitialized LibC::In6Addr
       (0..3).each do |i|
-        in_addr6.__u6_addr.__u6_addr32.as(StaticArray(UInt32, 4))[i] = LibC.htonl(((value >> ((3 - i) * 32)) & 0xffffffff).to_u32)
+        in_addr6.__in6_u.__u6_addr32.as(StaticArray(UInt32, 4))[i] = LibC.htonl(((value >> ((3 - i) * 32)) & 0xffffffff).to_u32)
       end
       in_addr6_p = pointerof(in_addr6).as(Void*)
       String.new(LibC::INET6_ADDRSTRLEN) do |buf6|
@@ -129,7 +129,7 @@ class IPAddr
         raise InvalidAddressFormat.new(address_string, family)
       end
       value = BigInt.new(0)
-      u32_list = in_addr6.__u6_addr.__u6_addr32.as(StaticArray(UInt32, 4)).map { |u32| LibC.ntohl(u32) }
+      u32_list = in_addr6.__in6_u.__u6_addr32.as(StaticArray(UInt32, 4)).map { |u32| LibC.ntohl(u32) }
       u32_list.each_index do |i|
         value += (u32_list[i].to_big_i << ((3 - i) * 32))
       end
